@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 
@@ -147,6 +149,12 @@ public class SearchableListDialog extends DialogFragment implements
         _searchView.setOnQueryTextListener(this);
         _searchView.setOnCloseListener(this);
         _searchView.clearFocus();
+        // Magic method to set searchview color
+        ((EditText)_searchView
+                .findViewById(
+                        (_searchView.getContext().getResources()
+                                .getIdentifier("android:id/search_src_text", null, null)))
+            ).setTextColor(Color.BLACK);
         InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context
                 .INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(_searchView.getWindowToken(), 0);
@@ -157,8 +165,9 @@ public class SearchableListDialog extends DialogFragment implements
         _listViewItems = (ListView) rootView.findViewById(R.id.listItems);
 
         //create the adapter by passing your ArrayList data
-        listAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1,
+        listAdapter = new ArrayAdapter(getActivity(), R.layout.list_item,
                 items);
+
         //attach the adapter to the list
         _listViewItems.setAdapter(listAdapter);
 
