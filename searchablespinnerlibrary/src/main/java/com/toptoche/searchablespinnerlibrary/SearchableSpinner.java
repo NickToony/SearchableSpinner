@@ -28,6 +28,7 @@ public class SearchableSpinner extends Spinner implements View.OnTouchListener,
     private ArrayAdapter _arrayAdapter;
     private String _strHintText;
     private boolean _isFromInit;
+    private int offset = 0;
 
     public SearchableSpinner(Context context) {
         super(context);
@@ -86,8 +87,13 @@ public class SearchableSpinner extends Spinner implements View.OnTouchListener,
                 // Description: The items were only set initially, not reloading the data in the
                 // spinner every time it is loaded with items in the adapter.
                 _items.clear();
+                offset = 0;
                 for (int i = 0; i < _arrayAdapter.getCount(); i++) {
-                    _items.add(_arrayAdapter.getItem(i));
+                    if (_arrayAdapter.isEnabled(i)) {
+                        _items.add(_arrayAdapter.getItem(i));
+                    } else {
+                        offset += 1;
+                    }
                 }
                 // Change end.
 
@@ -118,12 +124,12 @@ public class SearchableSpinner extends Spinner implements View.OnTouchListener,
 
     @Override
     public void onSearchableItemClicked(Object item, int position) {
-        setSelection(_items.indexOf(item));
+        setSelection(_items.indexOf(item) + offset);
 
         if (!_isDirty) {
             _isDirty = true;
             setAdapter(_arrayAdapter);
-            setSelection(_items.indexOf(item));
+            setSelection(_items.indexOf(item) + offset);
         }
     }
 
